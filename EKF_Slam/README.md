@@ -35,7 +35,7 @@ _EKF Formula (Prediction)_
 		left_var  = (control_motion_factor * left)^2  + (control_turn_factor * (left-right))^2
  		right_var = (control_motion_factor * right)^2 + (control_turn_factor * (left-right))^2
 
-_Differential Drive Motion model (g)_
+_Differential Drive Motion Model (g)_
 
 
 	
@@ -70,25 +70,27 @@ _State Jacobian Matrix(without landmark)_
 
 
 _Control Jacobian Matrix(without landmarks)_
-	l, r = control
-        r != l:
-            rml = r - l
-            rml2 = rml * rml
-            theta_ = theta + rml/w
-            dg1dl = w*r/rml2*(sin(theta_)-sin(theta))  - (r+l)/(2*rml)*cos(theta_)
-            dg2dl = w*r/rml2*(-cos(theta_)+cos(theta)) - (r+l)/(2*rml)*sin(theta_)
-            dg1dr = (-w*l)/rml2*(sin(theta_)-sin(theta)) + (r+l)/(2*rml)*cos(theta_)
-            dg2dr = (-w*l)/rml2*(-cos(theta_)+cos(theta)) + (r+l)/(2*rml)*sin(theta_)
-            
-        r == l
-            dg1dl = 0.5*(cos(theta) + l/w*sin(theta))
-            dg2dl = 0.5*(sin(theta) - l/w*cos(theta))
-            dg1dr = 0.5*(-l/w*sin(theta) + cos(theta))
-            dg2dr = 0.5*(l/w*cos(theta) + sin(theta))
 
-        dg3dl = -1.0/w
-        dg3dr = 1.0/w
-        m = array([[dg1dl, dg1dr], [dg2dl, dg2dr], [dg3dl, dg3dr]])
+
+		l, r = control
+		r != l:
+		    rml = r - l
+		    rml2 = rml * rml
+		    theta_ = theta + rml/w
+		    dg1dl = w*r/rml2*(sin(theta_)-sin(theta))  - (r+l)/(2*rml)*cos(theta_)
+		    dg2dl = w*r/rml2*(-cos(theta_)+cos(theta)) - (r+l)/(2*rml)*sin(theta_)
+		    dg1dr = (-w*l)/rml2*(sin(theta_)-sin(theta)) + (r+l)/(2*rml)*cos(theta_)
+		    dg2dr = (-w*l)/rml2*(-cos(theta_)+cos(theta)) + (r+l)/(2*rml)*sin(theta_)
+		    
+		r == l
+		    dg1dl = 0.5*(cos(theta) + l/w*sin(theta))
+		    dg2dl = 0.5*(sin(theta) - l/w*cos(theta))
+		    dg1dr = 0.5*(-l/w*sin(theta) + cos(theta))
+		    dg2dr = 0.5*(l/w*cos(theta) + sin(theta))
+
+		dg3dl = -1.0/w
+		dg3dr = 1.0/w
+		m = array([[dg1dl, dg1dr], [dg2dl, dg2dr], [dg3dl, dg3dr]])
 
 
 
