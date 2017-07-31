@@ -10,7 +10,7 @@
 The work of this project shows the step of implementing Particle Filter for SLAM. The work is based on the offline data and visualisation package is taken from the tutorial given by Prof. Claus Brenner. In addition to the original experiment with the feature base approach of landmark association, the project is including an ongoing work on a map base data association without particular landmark matchin ('pf_slam_mapmatching.py'). 
 
 
-# *FASTSLAM Summary**
+# **FASTSLAM Summary**
 
 **STEP 1-Prediction:**
 
@@ -19,7 +19,7 @@ The work of this project shows the step of implementing Particle Filter for SLAM
 
 
 
-# **Runing project.
+# **Runing project**
 Need python 3.x to run
 
 To run the simulation, in src folder
