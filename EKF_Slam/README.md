@@ -11,9 +11,9 @@ The work of this project shows the step of implementing Extended Kalman Filter f
 
 # **EKF-SLAM Summary**
 
-**STEP 1-Prediction:** Predicting the next state,  
+**STEP 1-Prediction:** Predicting the next state,
 
-_EKF Formula (Prediction)
+__EKF Formula (Prediction)__
 
 
 
