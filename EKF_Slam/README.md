@@ -15,7 +15,7 @@ The work of this project shows the step of implementing Extended Kalman Filter f
 
 _EKF Formula (Prediction)_
 
-'''
+```sh
 
 X[t]_         = g(X[t-1],u[t])  
 Sig_State[t]_ = G[t]*Sig_State[t-1]*GT[t] + V[t]*Sig_Control*VT[t]
@@ -35,8 +35,7 @@ Sig_Control = Control covariances = [left_var     0    ]
 left_var  = (control_motion_factor * left)^2  + (control_turn_factor * (left-right))^2
 right_var = (control_motion_factor * right)^2 + (control_turn_factor * (left-right))^2
 
-
-'''
+```
 
 _Differential Drive Motion Model (g)_
 
