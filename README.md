@@ -12,6 +12,10 @@ The work of this project shows the step of implementing Extended Kalman Filter a
 	* Basic landmark feature data association  
     	* Gripmap likelihood probability data association
 
+[**Online Graph Filter**](./OnlineGraphSlam), work included  
+	* Static landmark update  
+    	* Dynamic landmark update
+
 
 
 
