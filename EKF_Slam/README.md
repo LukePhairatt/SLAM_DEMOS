@@ -15,7 +15,10 @@ The work of this project shows the step of implementing Extended Kalman Filter f
 
 Predict the next state,  
 
-_EKF Formula (Prediction)_  
+_EKF Formula (Prediction)_
+
+
+
 		X[t]_         = g(X[t-1],u[t])  
 		Sig_State[t]_ = G[t]*Sig_State[t-1]*GT[t] + V[t]*Sig_Control*VT[t]
 
