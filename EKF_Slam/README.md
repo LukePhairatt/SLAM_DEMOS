@@ -7,16 +7,14 @@
 
 
 # **Overview**
-The work of this project shows the step of implementing Extended Kalman Filter for SLAM. The work is based on the offline data  
-from the differential drive robot and Lidar measurements. The raw data and visualisation package is taken from the tutorial given  
-by Prof. Claus Brenner.
+The work of this project shows the step of implementing Extended Kalman Filter for SLAM. The work in this project uses the offline data and visualisation package taken from the tutorial given by Prof. Claus Brenner.
 
 # **EKF-SLAM Summary**
 
 **STEP 1-Prediction:**
 Predict the next state,
 
-_EKF Formula (Prediction)_  
+_EKF Formula (Prediction)_
 	X[t]_         = g(X[t-1],u[t])
 	Sig_State[t]_ = G[t]*Sig_State[t-1]*GT[t] + V[t]*Sig_Control*VT[t]
 
