@@ -187,7 +187,7 @@ _Measurement Observation and Correction Porcess_
 
 
 
-# **Runing project.
+# **Runing project**
 Need python 3.x to run
 
 To run the simulation, in src folder
