@@ -113,15 +113,21 @@ _EKF Formula (Correction)_
 
 _Measurement Covariance (Q)_
 
+```sh
+
 	Q =     [var_range,        0      ]
          	[     0   ,   var_bearing ]
 
 	where
 		var_range   = range std. deviation^2
 		var_bearing = bearing std. deviation^2
-	
-_Measurement function (h)_  
 
+```
+	
+_Measurement function (h)_
+
+
+```sh
 	z = {r, alpha} = h(X) given by
 
 	dx = lmk_x - (x + scanner_displacement * cos(theta))
@@ -129,7 +135,12 @@ _Measurement function (h)_
         r = sqrt(dx * dx + dy * dy)
         alpha = (atan2(dy, dx) - state[2] + pi) % (2*pi) - pi
 
+```
+
 _Measurement Jacobian Matrix (H)_
+
+
+```sh
   	w.r.t the robot pose (x,y,theta)
 	 	[dr_dx,     dr_dy,     dr_dtheta    ]
          	[dalpha_dx, dalpha_dy, dalpha_dtheta]
@@ -157,7 +168,11 @@ _Measurement Jacobian Matrix (H)_
 		dalpha_dlmk_x	= -(dalpha_dx)
 		dalpha_dlmk_y	= -(dalpha_dy)
 
+```
+
 _Measurement Observation and Correction Porcess_
+
+```sh
 	for each observation		
 		* Do measurement association: 
 			get_observations(...)
@@ -168,17 +183,25 @@ _Measurement Observation and Correction Porcess_
 		* Do a state correction
 			correct(...)
 
+```
+
 
 
 # **Runing project.
 Need python 3.x to run
 
 To run the simulation, in src folder
-'$ python ekf_slam_full_update.py'
+
+```sh
+$ python ekf_slam_full_update.py
+
+```
 
 
 To view result, in src/lib folder
-'$ logfile_viewer.py (and select load ekf_slam_correction_full.txt)'
+```sh
+$ logfile_viewer.py (and select load ekf_slam_correction_full.txt)
+```
 
 
 
