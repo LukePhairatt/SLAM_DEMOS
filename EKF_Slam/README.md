@@ -13,8 +13,8 @@ The work of this project shows the step of implementing Extended Kalman Filter f
 
 **STEP 1-Prediction:** Predicting the next state,
 
-\_EKF Formula (Prediction)_\
-
+_EKF Formula (Prediction)_
+'''
 
 
 		X[t]_         = g(X[t-1],u[t])  
@@ -34,6 +34,7 @@ The work of this project shows the step of implementing Extended Kalman Filter f
 
 		left_var  = (control_motion_factor * left)^2  + (control_turn_factor * (left-right))^2
  		right_var = (control_motion_factor * right)^2 + (control_turn_factor * (left-right))^2
+'''
 
 _Differential Drive Motion Model (g)_
 
