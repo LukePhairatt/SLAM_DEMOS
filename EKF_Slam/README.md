@@ -13,7 +13,7 @@ The work of this project shows the step of implementing Extended Kalman Filter f
 
 **STEP 1-Prediction:** Predicting the next state,
 
-__EKF Formula (Prediction)__
+__ EKF Formula (Prediction) __
 
 
 
