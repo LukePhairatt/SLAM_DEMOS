@@ -23,11 +23,11 @@ The work of this project shows the step of implementing Particle Filter for SLAM
 Need python 3.x to run
 
 To run the simulation, in src folder
-'''sh
+```sh
 $ python pf_slam.py
-'''
+```
 
 To view result, in src/lib folder
-'''sh
+```sh
 $ logfile_viewer.py (and select load load fast_slam_correction.txt)
-'''
+```
