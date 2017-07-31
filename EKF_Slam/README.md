@@ -11,9 +11,7 @@ The work of this project shows the step of implementing Extended Kalman Filter f
 
 # **EKF-SLAM Summary**
 
-**STEP 1-Prediction:**  
-
-Predict the next state,  
+**STEP 1-Prediction:** Predicting the next state,  
 
 _EKF Formula (Prediction)_
 
@@ -37,34 +35,38 @@ _EKF Formula (Prediction)_
 		left_var  = (control_motion_factor * left)^2  + (control_turn_factor * (left-right))^2
  		right_var = (control_motion_factor * right)^2 + (control_turn_factor * (left-right))^2
 
-_Differential Drive Motion model (g)_  
-	
-	l, r := left, right control input (encoder ticks * meter_per_tick)
-	w = wheel base distance (width)
-        r != l:
-            alpha = (r - l) / w
-            rad = l/alpha
-            x' = x + (rad + w/2.)*(sin(theta+alpha) - sin(theta))
-            y' = y + (rad + w/2.)*(-cos(theta+alpha) + cos(theta))
-            theta' = (theta + alpha + pi) % (2*pi) - pi
-        r == l
-            x' = x + l * cos(theta)
-            y' = y + l * sin(theta)
-            theta' = theta
+_Differential Drive Motion model (g)_
 
-_State Jacobian Matrix(without landmark)_  
-	l, r = control
-        r != l:
-            alpha = (r-l)/w
-            theta_ = theta + alpha
-            rpw2 = l/alpha + w/2.0
-            m = array([[1.0, 0.0, rpw2*(cos(theta_) - cos(theta))],
-                       [0.0, 1.0, rpw2*(sin(theta_) - sin(theta))],
-                       [0.0, 0.0, 1.0]])
-        r == l
-            m = array([[1.0, 0.0, -l*sin(theta)],
-                       [0.0, 1.0,  l*cos(theta)],
-                       [0.0, 0.0,  1.0]])
+
+	
+		l, r := left, right control input (encoder ticks * meter_per_tick)
+		w = wheel base distance (width)
+		r != l:
+		    alpha = (r - l) / w
+		    rad = l/alpha
+		    x' = x + (rad + w/2.)*(sin(theta+alpha) - sin(theta))
+		    y' = y + (rad + w/2.)*(-cos(theta+alpha) + cos(theta))
+		    theta' = (theta + alpha + pi) % (2*pi) - pi
+		r == l
+		    x' = x + l * cos(theta)
+		    y' = y + l * sin(theta)
+		    theta' = theta
+
+_State Jacobian Matrix(without landmark)_
+
+
+		l, r = control
+		r != l:
+		    alpha = (r-l)/w
+		    theta_ = theta + alpha
+		    rpw2 = l/alpha + w/2.0
+		    m = array([[1.0, 0.0, rpw2*(cos(theta_) - cos(theta))],
+		               [0.0, 1.0, rpw2*(sin(theta_) - sin(theta))],
+		               [0.0, 0.0, 1.0]])
+		r == l
+		    m = array([[1.0, 0.0, -l*sin(theta)],
+		               [0.0, 1.0,  l*cos(theta)],
+		               [0.0, 0.0,  1.0]])
 
 
 _Control Jacobian Matrix(without landmarks)_
