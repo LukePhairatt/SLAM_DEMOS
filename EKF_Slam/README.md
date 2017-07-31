@@ -11,10 +11,11 @@ The work of this project shows the step of implementing Extended Kalman Filter f
 
 # **EKF-SLAM Summary**
 
-**STEP 1-Prediction:**
-Predict the next state,
+**STEP 1-Prediction:**  
 
-_EKF Formula (Prediction)_
+Predict the next state,  
+
+_EKF Formula (Prediction)_  
 	X[t]_         = g(X[t-1],u[t])
 	Sig_State[t]_ = G[t]*Sig_State[t-1]*GT[t] + V[t]*Sig_Control*VT[t]
 
