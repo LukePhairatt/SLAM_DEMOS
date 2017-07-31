@@ -8,7 +8,7 @@ The work of this project shows the step of implementing Extended Kalman Filter a
 	* Basic full matrix update  
 	* Sparse matrix update
 
-[**Particle Filter**](./PF_FastSlamGridMap), work included  
+[**Particle Filter**](./PF_FastSlam_GridMap), work included  
 	* Basic landmark feature data association  
     	* Gripmap likelihood probability data association
 
