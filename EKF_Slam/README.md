@@ -14,26 +14,25 @@ The work of this project shows the step of implementing Extended Kalman Filter f
 **STEP 1-Prediction:** Predicting the next state,
 
 _EKF Formula (Prediction)_
+
 '''
+X[t]_         = g(X[t-1],u[t])  
+Sig_State[t]_ = G[t]*Sig_State[t-1]*GT[t] + V[t]*Sig_Control*VT[t]
 
 
-		X[t]_         = g(X[t-1],u[t])  
-		Sig_State[t]_ = G[t]*Sig_State[t-1]*GT[t] + V[t]*Sig_Control*VT[t]
+where
+g  = Motion model  
+X_ = (Predict) System state = {x,y,theta,landmarks}    
+u = Control inputs = {left wheel distance, right wheel distance}  
+G = Jacobian matrix w.r.t State  
+V = Jacobian matrix w.r.t Controls    
+Sig_State_   = (Predict) State covariances
 
+Sig_Control = Control covariances = [left_var     0    ]  
+                            	    [ 0       right_var]
 
-	where
-		g  = Motion model  
-		X_ = (Predict) System state = {x,y,theta,landmarks}    
-  		u = Control inputs = {left wheel distance, right wheel distance}  
-		G = Jacobian matrix w.r.t State  
-		V = Jacobian matrix w.r.t Controls    
-		Sig_State_   = (Predict) State covariances
-
-		Sig_Control = Control covariances = [left_var     0    ]  
-                                            	    [ 0       right_var]
-
-		left_var  = (control_motion_factor * left)^2  + (control_turn_factor * (left-right))^2
- 		right_var = (control_motion_factor * right)^2 + (control_turn_factor * (left-right))^2
+left_var  = (control_motion_factor * left)^2  + (control_turn_factor * (left-right))^2
+right_var = (control_motion_factor * right)^2 + (control_turn_factor * (left-right))^2
 '''
 
 _Differential Drive Motion Model (g)_
