@@ -96,7 +96,8 @@ _Control Jacobian Matrix(without landmarks)_
 
 
 
-**STEP 2-Correction:**
+**STEP 2-Correction:**  
+
 _EKF Formula (Correction)_
 
 ```sh
