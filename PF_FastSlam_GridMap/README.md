@@ -14,7 +14,7 @@ The work of this project shows the step of implementing Particle Filter for SLAM
 
 **STEP 1- Generate the particles:**  
 
-In this step, we need generate the new particles using the following motion model
+In this step, we need to generate the new particles using the following robot motion model
 
 _Differential Drive Motion Model (g)_
 
@@ -70,6 +70,8 @@ for each PARTICLE
 
 		2- find the best measurement-landmark match (maximum l value)
 
+			w, landmark_number = max((v,i) for i,v in enumerate(likelihoods))
+
 		3- There are 2 cases: Init the new landmark or Update the old landmark 
                       
 		    **case 1**: New landmark considered from the following condition
@@ -94,7 +96,7 @@ for each PARTICLE
 				
 				   where
 
-				      Ql =   H*Sig_lmk*HT  + Qt
+				      Ql =   H*Q_lmk*HT  + Qt
 
 				      K  =        Q_lmk * HT
 					     -------------------
@@ -119,7 +121,7 @@ _Measurement function (h)_
 _Measurement Jacobian Matrix (H)_  
 
 ```sh
-		w.r.t the landmark i position (lmk_x, lmk_y) 
+		w.r.t the landmark i position (mx, my) 
 		[dr_dmx,     dr_dmy     ]
          	[dalpha_dmx, dalpha_dmy ]
 
