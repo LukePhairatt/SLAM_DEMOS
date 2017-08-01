@@ -1,6 +1,6 @@
 ## **SLAM DEMO PROJECTS**  
 
-The work of this project shows the step of implementing Extended Kalman Filter and Particle Filter for SLAM. Please see Readme.md in each project for third-party software and implementation details.
+The work of this project shows the step of implementing various SLAM algorithms on the offiline Lidar data. Please see Readme.md in each project for third-party software and implementation details.
 
 
 
