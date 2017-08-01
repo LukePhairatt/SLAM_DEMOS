@@ -126,8 +126,8 @@ _Measurement Jacobian Matrix (H)_
          	[dalpha_dmx, dalpha_dmy ]
 
 		cost, sint = cos(theta), sin(theta)
-		dx = landmark[0] - (state[0] + scanner_displacement * cost)
-		dy = landmark[1] - (state[1] + scanner_displacement * sint)
+		dx = mx - (x + scanner_displacement * cost)
+		dy = my - (y + scanner_displacement * sint)
 		q = dx * dx + dy * dy
 		sqrtq = sqrt(q)
 		dr_dmx = dx / sqrtq
