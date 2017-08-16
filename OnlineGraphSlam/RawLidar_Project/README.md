@@ -142,7 +142,7 @@ _Motion Update_:
 	Omega = Omega' - (AT * B.inverse() * A)
         Xi = Xi' - (AT * B.inverse() * C)
 
-	[see this](../UdacityAI_Project/) for a definition
+	[see this](../UdacityAI_Project/Readme.md) for a definition
 		
 
 
