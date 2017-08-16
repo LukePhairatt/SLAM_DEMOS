@@ -142,7 +142,7 @@ _Motion Update_:
 	Omega = Omega' - (AT * B.inverse() * A)
         Xi = Xi' - (AT * B.inverse() * C)
 
-	[see this](/src) for a definition
+	![see this](/src) for a definition
 		
 
 
