@@ -3,16 +3,9 @@
 
 '''
    Work in progress:
-        1- offline processing
-        2- change measurement model to lidar (range, beaing) not dx,dy
-           because we dont know exactly the robot position so we can't
-           reverse r,bearing to dx,dy from the current position?
-           r,bearing -> actual meaurement
-           dx,dy -> depend on the robot pose
-        3- velocity medel
-        4- dx dy motion model
-        5- udc r, bearing model
-        6- using batch update + landmark counter
+        1- r, bearing model
+        2- velocity medel
+        3- using batch update + landmark counter
    
 '''
 
@@ -113,8 +106,6 @@ class OnlineGraphSLAM:
         m = array([[dg1dl, dg1dr], [dg2dl, dg2dr], [dg3dl, dg3dr]])
             
         return m
-    
-    
     
     @staticmethod
     def h(state, landmark, scanner_displacement):
@@ -346,7 +337,7 @@ if __name__ == '__main__':
     # This is the EKF SLAM loop.
     f = open("../out_data/graph_slam_correction.txt", "w")
     #for i in range(len(logfile.motor_ticks)-1):
-    for i in range(100,100+100):
+    for i in range(100,200):
         # LK- note: In slam First observation will get no lmk match since start with empty map
         #           This is lmk association with the scans data at this tick location
         #           if matched -> return with lmk index in the system state, if no matched -> -1

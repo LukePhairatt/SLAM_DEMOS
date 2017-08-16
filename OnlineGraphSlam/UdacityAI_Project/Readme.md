@@ -1,10 +1,9 @@
-## **Online Graph SLAM**
+## **Online Graph SLAM- Landmark/Motion Simulation**
 
 The following python codes has been implemented from Udacity AI course on Online Graph SLAM.  
 
-Just as with the quiz, the information vector(mu) has x
-and y interlaced, so if there were two poses and 2
-landmarks, mu would look like:
+The state vector(mu) has x and y interlaced, so if there were two poses and 2 landmarks,  
+mu would look like:
 
 mu = matrix([[Px0],
              [Py0],
@@ -26,7 +25,7 @@ Graph sequence: Observation then motion update
 The code has been exyended with a dynamic expansion of the matrices to simulate SLAM idea when observe the new landmarks.
 It allocates/expands the matrix for a new motion/landmark measurement.
 
-### **Graph SLAM STEPS**
+### **Online Graph SLAM steps**
 **Initialisation:**  
 The system starts at the initial position x0,y0 with the matrix dimension of 2x2
 	(Omega matrix)

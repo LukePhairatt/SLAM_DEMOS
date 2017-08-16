@@ -1,208 +1,164 @@
-## **EKF-SLAM**
-![project][image0]
+## **Online Graph SLAM- Motion/Lidar Data Processing**
+
 ---
 
-[//]: # (Image References)
-[image0]: ./images/viewer.png "result"
-
-
 # **Overview**
-The work of this project shows the step of implementing Extended Kalman Filter for SLAM. The work in this project uses the offline data and visualisation package taken from the tutorial given by Prof. Claus Brenner.
+The work of this project shows the step of implementing Online Graph for SLAM. The work in this project uses the offline data and visualisation package taken from the tutorial given by Prof. Claus Brenner.
 
-# **EKF-SLAM Summary**
 
-**STEP 1-Prediction:** Predicting the next state,
+The state vector(mu) has x and y interlaced, so if there were two poses and 2 landmarks,  
+mu would look like:
 
-_EKF Formula (Prediction)_
+mu = matrix([[Px0],
+             [Py0],
+	     [h0 ],
+             [Px1],
+             [Py1],
+ 	     [h1 ],
+             [Lx0],
+             [Ly0],
+             [Lx1],
+             [Ly1]])
+ 
 
+Robot position: Px,Py,h(heading)
+Landmark position: Lx,Ly
+Robot wheel motion: dl,dr from the current robot pose
+Measurement: range, bearing 
+Graph sequence: Observation then motion update
+
+The code has been exyended with a dynamic expansion of the matrices to simulate SLAM idea when observe the new landmarks.
+It allocates/expands the matrix for a new motion/landmark measurement.
+
+### **Online Graph SLAM steps**
+**Initialisation:**  
+The system starts at the initial position x0,y0,h0 with the matrix dimension of 3x3
+	(Omega matrix)
+
+		x0  	y0 	h0
+	x0	1	
+	y0		1
+	h0			1
+
+
+	(Xi vector)
+	
+	x0	Px0	
+	y0	Py0
+	h0      h0
+
+
+
+
+**Measurement Update:**  
+Update corresponding the current robot position (x0,y0) and landmark observation (Lxi,Lyi)
+Note: 
+      1: if the new landmark, we need to expand the matrix/vector before the update	
+      2: update/add the information from the previous state
+
+_Measurement Update_:
 ```sh
+	Omega update
+		Add Hi_T*Q_inv*Hi at corresponding x, mi
 
-	X[t]_         = g(X[t-1],u[t])  
-	Sig_State[t]_ = G[t]*Sig_State[t-1]*GT[t] + V[t]*Sig_Control*VT[t]
-
+	Xi update
+		Add Hi_T*Q_inv*(zi-zi'+ Hi*Si)
 
 	where
-		g  = Motion model  
-		X_ = (Predict) System state = {x,y,theta,landmarks}    
-		u = Control inputs = {left wheel distance, right wheel distance}  
-		G = Jacobian matrix w.r.t State  
-		V = Jacobian matrix w.r.t Controls    
-		Sig_State_   = (Predict) State covariances
-
-		Sig_Control = Control covariances = [left_var     0    ]  
-                            	    		    [ 0       right_var]
-
-		left_var  = (control_motion_factor * left)^2  + (control_turn_factor * (left-right))^2
-		right_var = (control_motion_factor * right)^2 + (control_turn_factor * (left-right))^2
-
-```
-
-_Differential Drive Motion Model (g)_
-
+		x   = [x,y,heading,landmarks]
+		zi' = h(x) = [range, bearing]
+		q   = dx * dx + dy * dy
+		Hi  = dhi/dx =	[-dx/sqrtq,-dy/sqrtq, (dx*sint-dy*cost)*scanner_displacement/sqrtq, dx/sqrtq,dy/sqrtq]
+				[ dy/q,    -dx/q,     -1 - scanner_displacement/q*(dx*cost+dy*sint),-dy/q,  ,dx/q    ]
+		Q   = [2x2] measurement noise
+		Si  = [x, lmki]
 
 	
-		l, r := left, right control input (encoder ticks * meter_per_tick)
-		w = wheel base distance (width)
-		r != l:
+```
+		
+**Motion Update:**  
+Update corresponding the current robot position (x0,y0) to the next position (x1,y1)
+Note: 
+      1: we need to expand the matrix/vector before the motion update
+      2: update/add the information from the previous state
+
+
+_Motion Model(g)_:
+```sh
+		l, r = dl,dr
+		w = wheel base width
+		if r != l:
 		    alpha = (r - l) / w
 		    rad = l/alpha
 		    x' = x + (rad + w/2.)*(sin(theta+alpha) - sin(theta))
 		    y' = y + (rad + w/2.)*(-cos(theta+alpha) + cos(theta))
 		    theta' = (theta + alpha + pi) % (2*pi) - pi
-		r == l
+		else:
 		    x' = x + l * cos(theta)
 		    y' = y + l * sin(theta)
 		    theta' = theta
+```
 
-_State Jacobian Matrix(without landmark)_
 
+_Motion Update_:
+```sh
+	Omega update (X_prvious to X)
+		-GT  * R_inv * (-GT I)
+		 I
+
+
+	Xi update (X_previous to X)
+		-GT  * R_inv * (X-GT*X_previous)
+		 I
+
+	Where
+		 X = robot state = [x,y,heading]
+		 G = State Jacobian = dg/dstate
+		 R = [3x3] control noise
+	
+
+	dg/dstate := 
 
 		l, r = control
-		r != l:
+		if r != l:
 		    alpha = (r-l)/w
 		    theta_ = theta + alpha
 		    rpw2 = l/alpha + w/2.0
 		    m = array([[1.0, 0.0, rpw2*(cos(theta_) - cos(theta))],
 		               [0.0, 1.0, rpw2*(sin(theta_) - sin(theta))],
 		               [0.0, 0.0, 1.0]])
-		r == l
+		else:
 		    m = array([[1.0, 0.0, -l*sin(theta)],
 		               [0.0, 1.0,  l*cos(theta)],
-		               [0.0, 0.0,  1.0]])
+		               [0.0, 0.0,  1.0]]) 
+		
 
-
-_Control Jacobian Matrix(without landmarks)_
-
-
-		l, r = control
-		r != l:
-		    rml = r - l
-		    rml2 = rml * rml
-		    theta_ = theta + rml/w
-		    dg1dl = w*r/rml2*(sin(theta_)-sin(theta))  - (r+l)/(2*rml)*cos(theta_)
-		    dg2dl = w*r/rml2*(-cos(theta_)+cos(theta)) - (r+l)/(2*rml)*sin(theta_)
-		    dg1dr = (-w*l)/rml2*(sin(theta_)-sin(theta)) + (r+l)/(2*rml)*cos(theta_)
-		    dg2dr = (-w*l)/rml2*(-cos(theta_)+cos(theta)) + (r+l)/(2*rml)*sin(theta_)
-		    
-		r == l
-		    dg1dl = 0.5*(cos(theta) + l/w*sin(theta))
-		    dg2dl = 0.5*(sin(theta) - l/w*cos(theta))
-		    dg1dr = 0.5*(-l/w*sin(theta) + cos(theta))
-		    dg2dr = 0.5*(l/w*cos(theta) + sin(theta))
-
-		dg3dl = -1.0/w
-		dg3dr = 1.0/w
-		m = array([[dg1dl, dg1dr], [dg2dl, dg2dr], [dg3dl, dg3dr]])
-
-
-
-**STEP 2-Correction:**  
-
-_EKF Formula (Correction)_
-
-```sh
-
-	K = 	 Sig_State_*HT  
-              ----------------------         
-               (H*Sig_State_*HT + Q)
-
-        X  =     X_ + K*(Z - z)
-
-        Sig_state = (I - Kt*H)*X_   
 
 ```
 
-_Measurement Covariance (Q)_
+**Reduce Position:**  
 
 ```sh
+	Omega = Omega' - (AT * B.inverse() * A)
+        Xi = Xi' - (AT * B.inverse() * C)
 
-	Q =     [var_range,        0      ]
-         	[     0   ,   var_bearing ]
+	see [this] for a definition
+		
 
-	where
-		var_range   = range std. deviation^2
-		var_bearing = bearing std. deviation^2
-
-```
-	
-_Measurement function (h)_
-
-
-```sh
-	z = {r, alpha} = h(X) given by
-
-	dx = lmk_x - (x + scanner_displacement * cos(theta))
-        dy = lmk_y - (y + scanner_displacement * sin(theta))
-        r = sqrt(dx * dx + dy * dy)
-        alpha = (atan2(dy, dx) - state[2] + pi) % (2*pi) - pi
 
 ```
 
-_Measurement Jacobian Matrix (H)_
+**Retrieve the robot and landmarks position:**  
 
-
-```sh
-  	w.r.t the robot pose (x,y,theta)
-	 	[dr_dx,     dr_dy,     dr_dtheta    ]
-         	[dalpha_dx, dalpha_dy, dalpha_dtheta]
-	
-	where
-		cost, sint = cos(theta), sin(theta)
-        	dx = landmark[0] - (state[0] + scanner_displacement * cost)
-        	dy = landmark[1] - (state[1] + scanner_displacement * sint)
-        	q = dx * dx + dy * dy
-        	sqrtq = sqrt(q)
-        	dr_dx = -dx / sqrtq
-        	dr_dy = -dy / sqrtq
-        	dr_dtheta = (dx * sint - dy * cost) * scanner_displacement / sqrtq
-        	dalpha_dx =  dy / q
-        	dalpha_dy = -dx / q
-        	dalpha_dtheta = -1 - scanner_displacement / q * (dx * cost + dy * sint)
-
-        w.r.t the landmark i position (lmk_x, lmk_y) 
-		[dr_dlmk_x,     dr_dlmk_y     ]
-         	[dalpha_dlmk_x, dalpha_dlmk_y ]
-
- 	where
-		dr_dlmk_x 	= -(dr_dx) 
-		dr_dlmk_y	= -(dr_dy)
-		dalpha_dlmk_x	= -(dalpha_dx)
-		dalpha_dlmk_y	= -(dalpha_dy)
-
-```
-
-_Measurement Observation and Correction Porcess_
+To retrieve the robot and landmark positions, we use the following equation
 
 ```sh
-	for each observation		
-		* Do measurement association: 
-			get_observations(...)
-
-		* Do landmark initialisation for a new observation
-			add_landmark_to_state(...)
-
-		* Do a state correction
-			correct(...)
-
+	mu = Omega.inverse() * Xi 
 ```
 
 
 
-# **Runing project**
-Need python 3.x to run
-
-To run the simulation, in src folder
-
+**Running the code**  
 ```sh
-$ python ekf_slam_full_update.py
-
+$ python online_graph_slam.py
 ```
-
-
-To view result, in src/lib folder
-```sh
-$ logfile_viewer.py (and select load ekf_slam_correction_full.txt)
-```
-
-
-
