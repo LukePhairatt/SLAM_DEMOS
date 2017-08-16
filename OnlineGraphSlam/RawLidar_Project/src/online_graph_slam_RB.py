@@ -3,9 +3,9 @@
 
 '''
    Work in progress:
-        1- r, bearing model
-        2- velocity medel
-        3- using batch update + landmark counter
+        model not working, try
+        1- velocity medel
+        2- using batch update + landmark counter
    
 '''
 
@@ -188,7 +188,7 @@ class OnlineGraphSLAM:
         V = self.dg_dcontrol(self.state, control, self.robot_width)
         R3 = dot(V, dot(control_covariance, V.T))
         '''
-        R3 = array([[200.0, 0.0, 0.0],[0.0, 200.0, 0.0],[0.0,0.0,0.5]])
+        R3 = array([[100.0, 0.0, 0.0],[0.0, 100.0, 0.0],[0.0,0.0,0.5]])
         I = identity(3)
         Gr = concatenate((-G3.T,I), axis=0)
         Gv = concatenate((-G3,I), axis=1)
@@ -232,7 +232,7 @@ class OnlineGraphSLAM:
             if lmk_index == -1:
                 # new one - need to expand matrix/vector at the end for a landmark
                 lmk_index = self.add_landmark_to_state(cylinder_world)
-                print(cylinder_world)
+                #print(cylinder_world)
                 
             landmark = self.state[3+2*lmk_index : 3+2*lmk_index+2]
             H3 = self.dh_dstate(self.state, landmark, self.scanner_displacement)
@@ -387,6 +387,20 @@ if __name__ == '__main__':
     f.close()
     mu = gph.solve_onlineslam()
     print("mu: ", mu)
+    
+    
+    '''
+    Estimate x,y landmark ground truth (EKF SLAM):    
+    1035.9 108.8
+    1853.7 754.1
+    1596.9 1454.8
+    963.0 1230.0
+    512.4 854.3
+    255.6 1619.2
+    
+    '''
+    
+    
     
     
     

@@ -157,5 +157,5 @@ To retrieve the robot and landmark positions, we use the following equation
 
 **Running the code**  
 ```sh
-$ python online_graph_slam.py
+$ python online_graph_slam_XY.py
 ```
