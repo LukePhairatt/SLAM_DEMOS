@@ -26,8 +26,8 @@ Graph sequence: Observation then motion update
 The code has been exyended with a dynamic expansion of the matrices to simulate SLAM idea when observe the new landmarks.
 It allocates/expands the matrix for a new motion/landmark measurement.
 
-# **Graph SLAM STEPS**
-**Initialisation**
+### **Graph SLAM STEPS**
+**Initialisation:**  
 The system starts at the initial position x0,y0 with the matrix dimension of 2x2
 	(Omega matrix)
 
@@ -44,8 +44,7 @@ The system starts at the initial position x0,y0 with the matrix dimension of 2x2
 
 
 
-**Measurement Update:**
-
+**Measurement Update:**  
 Update corresponding the current robot position (x0,y0) and landmark observation (Lxi,Lyi)
 Note: 1: not included measurement noises
       2: if the new landmark, we need to expand the matrix/vector before the update	
@@ -74,7 +73,7 @@ Note: 1: not included measurement noises
 	
 ```
 		
-**Motion Update:**
+**Motion Update:**  
 Update corresponding the current robot position (x0,y0) to the next position (x1,y1)
 Note: 1: not included motion noises
       2: we need to expand the matrix/vector before the motion update
@@ -100,7 +99,7 @@ Note: 1: not included motion noises
 
 ```
 
-**Reduce Position:**
+**Reduce Position:**  
 
 ```sh
 				(Omega)
@@ -139,8 +138,7 @@ Note: 1: not included motion noises
 
 ```
 
-**Retrieve the robot and landmarks position:**
-
+**Retrieve the robot and landmarks position:**  
 
 To retrieve the robot and landmark positions, we use the following equation
 
@@ -150,7 +148,7 @@ To retrieve the robot and landmark positions, we use the following equation
 
 
 
-**Running the code**
+**Running the code**  
 ```sh
 $ python OnlineSLAM_DynamicLmkUpdate.py
 ```
