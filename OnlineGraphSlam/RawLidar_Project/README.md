@@ -1,4 +1,4 @@
-## **Online Graph SLAM- Motion/Lidar Data Processing**
+## **Online Graph SLAM- Motion/Lidar Data Post-Processing**
 
 ---
 
@@ -142,13 +142,13 @@ _Motion Update_:
 	Omega = Omega' - (AT * B.inverse() * A)
         Xi = Xi' - (AT * B.inverse() * C)
 
-	see [this] for a definition
+	see [this](./UdacityAI_Project/) for a definition
 		
 
 
 ```
 
-**Retrieve the robot and landmarks position:**  
+**Retrieve the robot and landmark positions:**  
 
 To retrieve the robot and landmark positions, we use the following equation
 
