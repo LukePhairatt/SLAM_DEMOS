@@ -138,14 +138,11 @@ _Motion Update_:
 
 **Reduce Position:**  
 
+[see this](/src) for a definition
 ```sh
 	Omega = Omega' - (AT * B.inverse() * A)
         Xi = Xi' - (AT * B.inverse() * C)
-
-	![see this](/src) for a definition
-		
-
-
+			
 ```
 
 **Retrieve the robot and landmark positions:**  
