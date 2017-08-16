@@ -15,15 +15,15 @@ mu = matrix([[Px0],
              [Ly1]])
  
 
-Robot position: Px,Py (no heading)
-Landmark position: Lx,Ly
-Robot motion: dx,dy from the current position
-Measurement: lx,ly from the current position
-Graph sequence: Observation then motion update
+Robot position: Px,Py (no heading)  
+Landmark position: Lx,Ly  
+Robot motion: dx,dy from the current position  
+Measurement: lx,ly from the current position  
+Graph sequence: Observation then motion update  
 
 
-The code has been exyended with a dynamic expansion of the matrices to simulate SLAM idea when observe the new landmarks.
-It allocates/expands the matrix for a new motion/landmark measurement.
+The code has been exyended with a dynamic expansion of the matrices to simulate SLAM idea when observe the new landmarks.  
+It allocates/expands the matrix for a new motion/landmark measurement.  
 
 ### **Online Graph SLAM steps**
 **Initialisation:**  
