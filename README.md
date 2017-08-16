@@ -13,8 +13,8 @@ The work of this project shows the step of implementing various SLAM algorithms 
     	* Gripmap likelihood probability data association
 
 [**Online Graph Filter**](./OnlineGraphSlam), work included  
-	* Static landmark update  
-    	* Dynamic landmark update
+	* Udacity AI landmark sim [here](./OnlineGraphSlam/UdacityAI_Project)
+    	* Raw Lidar and Robot motion post-processing [here](./OnlineGraphSlam/RawLidar_Project)
 
 
 
