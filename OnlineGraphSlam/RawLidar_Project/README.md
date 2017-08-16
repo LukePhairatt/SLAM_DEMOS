@@ -138,7 +138,7 @@ _Motion Update_:
 
 **Reduce Position:**  
 
-[see this](/src) for a definition
+[see this](../UdacityAI_Project/Readme.md) for a definition
 ```sh
 	Omega = Omega' - (AT * B.inverse() * A)
         Xi = Xi' - (AT * B.inverse() * C)
