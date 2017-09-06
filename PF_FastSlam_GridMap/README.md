@@ -18,7 +18,7 @@
 # **Overview**
 The work of this project shows the step of implementing Particle Filter for SLAM. The work is based on the offline data and visualisation package is taken from the tutorial given by Prof. Claus Brenner. In addition to the original experiment with the feature base approach of landmark association, this project I have experimented with a map base data association (featureless) using a scan matching approach. The work here follows the apporach in Probabilistic Robotics Book by Thrun and etc. The implementation yields the similar result as EKF/PF-Fast SLAM. 
 
-**[Global Grid Map Update]**
+**[Global Grid Map Update]**  
 ![project][image5]
 ![project][image6]
 ![project][image7]
