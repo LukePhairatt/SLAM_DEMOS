@@ -8,11 +8,11 @@ The work of this project shows the step of implementing various SLAM algorithms 
 	* Full matrix update  
 	* Sparse matrix update
 
-[**Particle Filter**](./PF_FastSlam_Lmk), work included  
+[**Particle Filter Landmark**](./PF_FastSlam_Lmk), work included  
 	* Data association using landmarks extracted from Lidar data  
 
-[**Particle Filter**](./PF_FastSlam_GridMap), work included  
-    	* Data association using Binary scan-matching 
+[**Particle Filter Scan-matching**](./PF_FastSlam_GridMap), work included  
+    	* Data association using Binary scan-matching   
 	* Gripmap likelihood probability for a map reconstruction 
 
 [**Online Graph Filter**](./OnlineGraphSlam), work included  
