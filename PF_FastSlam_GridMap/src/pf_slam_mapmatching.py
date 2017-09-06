@@ -138,7 +138,7 @@ class FastSLAM:
 		weights = self.update_and_compute_weights_gridmap(scanner_offset, measurement,showPlot)
 		weights = np.array(weights,dtype=np.float16)
 		weights = weight_normalise(weights)
-		print("particle normailsed weight: ", weights)
+		#print("particle normailsed weight: ", weights)
 		# resampling the good one
 		self.particles = self.resample(weights)
 
@@ -160,6 +160,8 @@ if __name__ == '__main__':
 	CentreGrid    = (51,51) 					# map centre
 	Resolution    = 50							# mm/cell
 	
+	# Global map survey 
+	GlobalMap = Gridmap(GridDimension, CentreGrid, Resolution)
 	
 	# Generate initial particles. Each particle is (x, y, theta).
 	number_of_particles = 70
@@ -220,10 +222,20 @@ if __name__ == '__main__':
 		print(file=f)
 
 		
-		# ----------------------------------------------------------------------------------------- #
-		#                    (Option) Build Global gridmap with the orrected pose                   #
-		# ----------------------------------------------------------------------------------------- #
-
+		# ---------------------------------------------------------- #
+		#             (Option) Build Global gridmap                  #
+		# ---------------------------------------------------------- #
+		if not(i%20):
+			print("------- Update gloabl grid map ---------")
+			robot_pose = (mean[0],mean[1],mean[2])
+			# update a global grid map probability on this robot location and measurement
+			GlobalMap.ComputeGridProbability(robot_pose, scanner_offset, measurement)
+			title = "Map update: " + str(i)
+			plt.title(title)
+			plt.imshow(GlobalMap.gridmap)
+			
+			plt.show()
+			
 	f.close()
 	
 	'''

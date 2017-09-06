@@ -8,11 +8,21 @@
 [image2]: ./images/Lidar_resample10.png "lidar resample"
 [image3]: ./images/gridmap.png "grid1_2"
 [image4]: ./images/gridmap3.png "grid3"
+[image5]: ./images/Gridmap_Update/G0.png "global0" 
+[image6]: ./images/Gridmap_Update/G4.png "global4" 
+[image7]: ./images/Gridmap_Update/G10.png "global10" 
+[image8]: ./images/Gridmap_Update/G13.png "global13" 
 
 
 
 # **Overview**
 The work of this project shows the step of implementing Particle Filter for SLAM. The work is based on the offline data and visualisation package is taken from the tutorial given by Prof. Claus Brenner. In addition to the original experiment with the feature base approach of landmark association, this project I have experimented with a map base data association (featureless) using a scan matching approach. The work here follows the apporach in Probabilistic Robotics Book by Thrun and etc. The implementation yields the similar result as EKF/PF-Fast SLAM. 
+
+**[Global Grid Map Update]**
+![project][image5]
+![project][image6]
+![project][image7]
+![project][image8]
 
 
 # **Quick Note**
