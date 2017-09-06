@@ -1,16 +1,52 @@
-## **Particle Filter- FastSLAM**
+## **Particle Filter- FastSLAM Gridmap Matching**
 ![project][image0]
 ---
 
 [//]: # (Image References)
 [image0]: ./images/viewer.png "result"
+[image1]: ./images/Lidar_full.png "lidar full"
+[image2]: ./images/Lidar_resample10.png "lidar resample"
+[image3]: ./images/gridmap.png "grid1_2"
+[image4]: ./images/gridmap3.png "grid3"
+
 
 
 # **Overview**
-The work of this project shows the step of implementing Particle Filter for SLAM. The work is based on the offline data and visualisation package is taken from the tutorial given by Prof. Claus Brenner. In addition to the original experiment with the feature base approach of landmark association, the project is including an ongoing work on a map base data association without particular landmark matchin ('pf_slam_mapmatching.py'). 
+The work of this project shows the step of implementing Particle Filter for SLAM. The work is based on the offline data and visualisation package is taken from the tutorial given by Prof. Claus Brenner. In addition to the original experiment with the feature base approach of landmark association, this project shows a map base data association without landmark features (scan matching). The work here follows the apporach in Probabilistic Robotics Book by Thrun annd etc. The result is quite good with a smooth path. 
 
 
-# **FASTSLAM Summary**
+# **Quick Note**
+[Lidar data resample]  
+In order to make this approach runs efficiently, the Lidar data is resampled (down sampling x10) and updated the particle grid map in the binary format for the scan matching. The global (survey) map can be updated every n intervals using Gripmap Probability. [function]()
+
+![full][image1]
+
+![resampled10][image2]
+
+[Lidar to a binary gridmap]  
+GridDimension = (101,101)	# map size row x col  
+CentreGrid    = (51,51) 	# map centre  
+Resolution    = 50		# mm/cell  
+
+![map][image3]
+
+[Scan matching]  
+x,y,heading particle pose  
+particle_pose1 = np.array([0.0, 0.0, 0.0 / 180.0 * pi])  
+particle_pose2 = particle_pose1  
+Particle_pose3 = np.array([-200.0, 0.0, 45.0 / 180.0 * pi])  
+
+![map1][image3]  
+![map2][image3]  
+Matching score(weight): map 1 and map 2 (perfect match) = **1.0**
+                
+
+
+![map1][image3]  
+![map3][image4]  
+Matching score(weight): map 1 and map 3 (shifted and rotated) = **0.0581**
+                	
+# **FASTSLAM Gridmap Summary**
 
 **STEP 1- Generate the particles:**  
 
@@ -47,117 +83,117 @@ With Gaussian distribution of the control motions, the new particles are generat
 **STEP 2- Compute the weight of all particles:**  
 We then compute the weight for each particle based on the actual measurements and the map of this particle based on the following equations.
 
-_compute_correspondence_likelihoods (weight)_  
+_update_and_compute_weights_gridmap_  
 
-for each PARTICLE  
 ```sh
-	for each MEASUREMENT 
-
-		1- compute corresponding likelihood with all landmarks within this particle 
-
-			l =         exp(-0.5*zQ)
-                              --------------------------
-                            (2*pi*sqrt(np.linalg.det(Ql)))
-			
-		where
-			Q_lmk = landmark covariance
-			Qt = measurement covariance = [var_range,      0      ] 
-   						      [ 0       ,  var_bearing]
-			Ql = H*Q_lmk*HT  + Qt
-			zQ = (z-z_pred)T * (z-z_pred)
-                              ---------------------
- 					Ql
-
-		2- find the best measurement-landmark match (maximum l value)
-
-			w, landmark_number = max((v,i) for i,v in enumerate(likelihoods))
-
-		3- There are 2 cases: Init the new landmark or Update the old landmark 
-                      
-		    **case 1**: New landmark considered from the following condition
-				first run, landmark is empty or
- 		      	        maximum likelihood is below the threshold 
-				
-				1- add lmk_x, lmk_y position to this particle map
-				   lmk_x = landmark x position in world coordinate
-				   lmk_y = landmark y position in world coordinate
-
-				
-				2- add landmark covariance to this particle map
-				   H_inv = 1/H(X)
-				   Qt = measurement covariance
-				   Q_lmk = H_inv * Qt * H_inv.T
-
-		    **case 2**: Update the existing landmark
-
-				1- Updated new lmk position  = current lmk position + K(z-z_pred)
-
-				2- Update new lmk covariance = (I-K*H) * current covariance
-				
-				   where
-
-				      Ql =   H*Q_lmk*HT  + Qt
-
-				      K  =        Q_lmk * HT
-					     -------------------
-						      Ql
-
-                    
-                             
+for each PARTICLE  
+	# Convert lidar data to a binary gridmap
+	map_m = Gridmap(self.GridDimension, self.CentreGrid, self.Resolution)
+	map_z = map_m.MeasurementToMap(vehicle_pose, scanner_offset, measurement)
+	# Compute data correlation
+	weight = grid_map_correlation(p.map_particle.gridmap, map_z)
 ```	
 
-_Measurement function (h)_  
+_grid_map_correlation function_  
 
 ```sh
-		z_pred = {r, alpha} = h(X) given by
-		dx = lmk_x - (x + scanner_displacement * cos(theta))
-        	dy = lmk_y - (y + scanner_displacement * sin(theta))
-        	r = sqrt(dx * dx + dy * dy)
-        	alpha = (atan2(dy, dx) - state[2] + pi) % (2*pi) - pi
+	#image blur for smoothness
+	m_world = cv2.GaussianBlur(map1,(3,3),0)
+	m_local = cv2.GaussianBlur(map2,(3,3),0)
+	#now computing weight
+	m_ = (sum(sum(m_local+m_world)))/float(2* m_local.size)
+	mn = m_*np.ones(m_local.shape)
+	A = sum(sum((m_local-mn) * (m_world-mn)))
+	B = sum(sum((m_local-mn)**2)) * sum(sum((m_world-mn)**2))
+	#similarity weight -1 to +1
+	matched_score = A/(sqrt(B))
 
 ```
 
-
-_Measurement Jacobian Matrix (H)_  
-
-```sh
-		w.r.t the landmark i position (mx, my) 
-		[dr_dmx,     dr_dmy     ]
-         	[dalpha_dmx, dalpha_dmy ]
-
-		cost, sint = cos(theta), sin(theta)
-		dx = mx - (x + scanner_displacement * cost)
-		dy = my - (y + scanner_displacement * sint)
-		q = dx * dx + dy * dy
-		sqrtq = sqrt(q)
-		dr_dmx = dx / sqrtq
-		dr_dmy = dy / sqrtq
-		dalpha_dmx = -dy / q
-		dalpha_dmy =  dx / q
-
-		return np.array([[dr_dmx, dr_dmy], [dalpha_dmx, dalpha_dmy]])
-
-```
 
 
 **STEP 3- Particle Resampling:**  
 
 Resampling wheel method 
 ```sh
-		new_particles = []
-		max_weight = max(weights)
-		index = random.randint(0, len(self.particles) - 1)
-		offset = 0.0
-		for i in range(len(self.particles)):
-			offset += random.uniform(0, 2.0 * max_weight)
-			while offset > weights[index]:
-				offset -= weights[index]
-				index = (index + 1) % len(weights)
-				
-			new_particles.append(copy.deepcopy(self.particles[index]))
+	new_particles = []
+	max_weight = max(weights)
+	index = random.randint(0, len(self.particles) - 1)
+	offset = 0.0
+	for i in range(len(self.particles)):
+		offset += random.uniform(0, 2.0 * max_weight)
+		while offset > weights[index]:
+			offset -= weights[index]
+			index = (index + 1) % len(weights)
+			
+		new_particles.append(copy.deepcopy(self.particles[index]))
 
-		return new_particles
+	return new_particles
 ```
+
+**STEP 4- Update a global probability gridmap(survey):**  
+
+_ComputeGridProbability function_ 
+```sh
+	for i in range(int(scanner_grid[0]-range_bound), int(scanner_grid[0]+range_bound)):
+		# check map boundary
+		if (i<0 or i>self.g_row-1):
+			continue
+
+		# update grid probability of every cell based on the given measurement (lidar data points)
+		for j in range(int(scanner_grid[1]-range_bound), int(scanner_grid[1]+range_bound)):
+			if (j<0 or j>self.g_col-1):#outside boundary ignore
+				continue
+
+			mapXY = self.GridToXY(i, j)
+			#if mi cell is in the perceptual field of zt
+			l_xy  = self.l.item((i,j)) + self.Inverse_sensor_model(mapXY, scanner_pose, measurement) - self.lo	
+			# avoid exp math overflow (accumulate l) by limit to exp 10
+			if abs(l_xy) < self.lmax:
+				self.l.itemset((i,j),l_xy)
+			else:
+				self.l.itemset((i,j), np.sign(l_xy)*self.lmax)
+			#compute p(m|zt,xt)	
+			self.gridmap.itemset((i,j), 1.0 - 1.0/(1.0+exp(self.l.item(i,j) )))
+
+```
+	Note:	scanner_pose = the scanner pose in x,y,heading
+		scanner_grid = the scanner position in row,col 
+		range_bound  = the maximum range in a number of grid cells 
+	
+
+_Inverse_sensor_model function_
+```sh
+	zt = measurement[0]
+	zb = measurement[1]
+	xi = mapXY[0]
+	yi = mapXY[1]
+	x = xs[0]
+	y = xs[1]
+	heading_s = xs[2]
+	r = sqrt((xi-x)**2 + (yi-y)**2)
+	br = (atan2(yi-y, xi-x) - heading_s + pi) % (2*pi) - pi               # angle need to be in -pi to pi!
+	#find zk matching from bearing angle by k = argmin_j(br-bj)
+	#finding match zt ray with this cell from the bearing angle
+	db = [abs(br- zb[j]) for j in range(len(zt))]
+	(min_k,k) = min((min_k,k) for k,min_k in enumerate(db))
+	zk = zt[k]
+	bk = zb[k]
+	#validating zt_k match for assigning probability
+	if(r > min(self.zmax, zk + self.wall/2.0) or (abs(br-bk)>self.beta/2.0) ):
+		return self.lo
+	if(zk < self.zmax and abs(r-zk)< self.wall/2.0 ):
+		return self.locc
+	if r <= zk:
+		return self.lfree
+	# if nothing match, return unknown 
+	return self.lo	
+```
+
+	Note: measurement = the list of ranges and bearing angles
+	      MapXY =  the xy coordinate of the grid cell
+              xs    =  the scanner pose 
+
 
 
 # **Runing project**
@@ -165,10 +201,10 @@ Need python 3.x to run
 
 To run the simulation, in src folder
 ```sh
-$ python pf_slam.py
+$ python pf_slam_mapmatching.py
 ```
 
 To view result, in src/lib folder
 ```sh
-$ logfile_viewer.py (and select load load fast_slam_correction.txt)
+$ logfile_viewer.py (and select load 'fast_slam_correction_gridmap.txt')
 ```

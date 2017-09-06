@@ -5,12 +5,15 @@ The work of this project shows the step of implementing various SLAM algorithms 
 
 
 [**Extended Kalman Filter**](./EKF_Slam), work included  
-	* Basic full matrix update  
+	* Full matrix update  
 	* Sparse matrix update
 
+[**Particle Filter**](./PF_FastSlam_Lmk), work included  
+	* Data association using landmarks extracted from Lidar data  
+
 [**Particle Filter**](./PF_FastSlam_GridMap), work included  
-	* Basic landmark feature data association  
-    	* Gripmap likelihood probability data association
+    	* Data association using Binary scan-matching 
+	* Gripmap likelihood probability for a map reconstruction 
 
 [**Online Graph Filter**](./OnlineGraphSlam), work included  
 	* Udacity AI landmark sim [here](./OnlineGraphSlam/UdacityAI_Project)  

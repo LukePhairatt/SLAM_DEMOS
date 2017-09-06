@@ -209,5 +209,61 @@ def FinalPlotGridMap(fig, gridmap):
 	
 	
 	
+if __name__ == '__main__':
+	# Testing grid map scan matching #
+	
+	# scan data
+	logfile = LegoLogfile()
+	logfile.read("../in_data/robot4_scan.txt")
+	AngleIncrement = abs(LegoLogfile.beam_index_to_angle(1)-LegoLogfile.beam_index_to_angle(0))
+	AngleStart = LegoLogfile.beam_index_to_angle(0)
+	ResamplingFactor = 10.0
+	Range_Lidar = RangeMeasurement(AngleIncrement, AngleStart, ResamplingFactor)
+	measurement = Range_Lidar.data_sampling(logfile.scan_data[0])
+	
+	# set original position
+	scanner_offset = (0.0, 0.0, 0.0)
+	pose1 = np.array([0.0, 0.0, 0.0 / 180.0 * pi])
+	pose2 = pose1#np.array([-50.0, 10.0, 10.0 / 180.0 * pi])
+	pose3 = np.array([-200.0, 0.0, 45.0 / 180.0 * pi])	
+	# build map instances
+	# Particle grid map size
+	GridDimension = (101,101)					# map size row x col
+	CentreGrid    = (51,51) 					# map centre
+	Resolution    = 50							# mm/cell
+	map1 = Gridmap(GridDimension, CentreGrid, Resolution)    # master
+	map2 = Gridmap(GridDimension, CentreGrid, Resolution)    # same as master
+	map3 = Gridmap(GridDimension, CentreGrid, Resolution)    # add some offsets
+	
+	map1.gridmap = map1.MeasurementToMap(pose1, scanner_offset, measurement)
+	map2.gridmap = map2.MeasurementToMap(pose2, scanner_offset, measurement)
+	map3.gridmap = map3.MeasurementToMap(pose3, scanner_offset, measurement)
+	
+	# compute matching score
+	w12 = grid_map_correlation(map1.gridmap,map2.gridmap)
+	w13 = grid_map_correlation(map1.gridmap,map3.gridmap)
+	print(w12)
+	print(w13)
+	
+	# display maps
+	plt.figure(1)
+	plt.title("Binary grid map- World coordinate")
+	plt.imshow(map1.gridmap)
+	
+	plt.figure(2)
+	plt.title("Binary grid map- World coordinate")
+	plt.imshow(map2.gridmap)
+	
+	plt.figure(3)
+	plt.title("Binary grid map- World coordinate")
+	plt.imshow(map3.gridmap)
+	plt.show()
+	
+	
+	
+	
+	
+	
+	
 	
 	
