@@ -3,7 +3,7 @@
 ---
 
 [//]: # (Image References)
-[image0]: ./images/viewer.png "result"
+[image0]: ./images/result.png "result"
 [image1]: ./images/Lidar_full.png "lidar full"
 [image2]: ./images/Lidar_resample10.png "lidar resample"
 [image3]: ./images/gridmap.png "grid1_2"
@@ -12,25 +12,25 @@
 
 
 # **Overview**
-The work of this project shows the step of implementing Particle Filter for SLAM. The work is based on the offline data and visualisation package is taken from the tutorial given by Prof. Claus Brenner. In addition to the original experiment with the feature base approach of landmark association, this project shows a map base data association without landmark features (scan matching). The work here follows the apporach in Probabilistic Robotics Book by Thrun annd etc. The result is quite good with a smooth path. 
+The work of this project shows the step of implementing Particle Filter for SLAM. The work is based on the offline data and visualisation package is taken from the tutorial given by Prof. Claus Brenner. In addition to the original experiment with the feature base approach of landmark association, this project I have experimented with a map base data association (featureless) using a scan matching approach. The work here follows the apporach in Probabilistic Robotics Book by Thrun and etc. The implementation yields the similar result as EKF/PF-Fast SLAM. 
 
 
 # **Quick Note**
-[Lidar data resample]  
-In order to make this approach runs efficiently, the Lidar data is resampled (down sampling x10) and updated the particle grid map in the binary format for the scan matching. The global (survey) map can be updated every n intervals using Gripmap Probability. [function]()
+**[Lidar data resample]**  
+In order to make this approach runs efficiently, the Lidar data is resampled (down sampling x10) and updated the particle grid map in the binary format for the scan matching. The global (survey) map can be updated every n intervals using Gripmap Probability (see _Step 4-Update a global probability gridmap_)
 
 ![full][image1]
 
 ![resampled10][image2]
 
-[Lidar to a binary gridmap]  
+**[Lidar to a binary gridmap]**  
 GridDimension = (101,101)	# map size row x col  
 CentreGrid    = (51,51) 	# map centre  
 Resolution    = 50		# mm/cell  
 
 ![map][image3]
 
-[Scan matching]  
+**[Scan matching]**  
 x,y,heading particle pose  
 particle_pose1 = np.array([0.0, 0.0, 0.0 / 180.0 * pi])  
 particle_pose2 = particle_pose1  
